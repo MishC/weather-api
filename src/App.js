@@ -1,12 +1,10 @@
 import "./App.css";
-import SearchBox from "./components/SearchBox.component";
+import CurrentWeather from "./components/CurrentWeather/CurrentWeather.component";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <SearchBox />
-      </header>
+      <CurrentWeather />
     </div>
   );
 }

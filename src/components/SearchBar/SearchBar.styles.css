@@ -1,0 +1,42 @@
+form {
+  margin: 0 auto;
+  padding: 4em;
+}
+
+.SearchBar .form-control {
+  max-width: 100%;
+  border-width: 1px;
+  border-color: var(--branding-color);
+  margin: 0 auto;
+}
+.SearchBar .form-control:focus {
+  border-color: var(--branding-color);
+  border-width: 1px;
+}
+.SearchBar .btn {
+  background: var(--branding-color);
+  color: var(--text-branding-color);
+  font-weight: 600;
+  border-width: 1px;
+  border-color: var(--branding-color);
+  margin-left: -2px;
+}
+.SearchBar .col-2 {
+  flex: none;
+}
+.SearchBar .btn:visited,
+.SearchBar .btn:focus {
+  border-color: var(--branding-color);
+  background: var(--branding-color);
+}
+.SearchBar .btn:active,
+.SearchBar .btn:hover {
+  border-color: #1e1e1e;
+  background: #1e1e1e;
+}
+.SearchBar h3 {
+  margin-top: 80px;
+}
+.inline {
+  display: inline-flex;
+}
