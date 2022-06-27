@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import "./SearchBar.styles.css";
-export default function SearchBar() {
-  const [city, setCity] = useState();
+const SearchBar = ({ handleSearch, handleSubmit, handleResponse }) => {
+  /* const [city, setCity] = useState();
   function handleSearch(event) {
     event.preventDefault();
     setCity(event.target.value);
@@ -12,10 +12,10 @@ export default function SearchBar() {
     //let urlCity = `https://api.openweathermap.org/data/2.5/forecast/?q=${city}&units=metric&APPID=${apiKey}`;
 
     //axios.get(urlCity).then(handleResponse);
-  }
-
+  }*/
+  console.log("searchBar");
   return (
-    <form className="inline">
+    <form className="inline" onSubmit={handleSubmit}>
       {" "}
       {/*onSubmit={handleSubmit}*/}
       <input
@@ -34,4 +34,5 @@ export default function SearchBar() {
       />
     </form>
   );
-}
+};
+export default SearchBar;
