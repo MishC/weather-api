@@ -57,7 +57,7 @@ export default class CurrentWeather extends React.Component {
     axios.get(urlCity).then(this.handleResponse);
   };
   handleResponse = (response) => {
-    let now = new Date();
+    //let now = new Date();
 
     console.log(response.data);
     this.setState({
@@ -66,20 +66,16 @@ export default class CurrentWeather extends React.Component {
       lat: response.data.features[0].geometry.coordinates[0].toFixed(5),
       lon: response.data.features[0].geometry.coordinates[1].toFixed(5),
     });
-    let url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${this.state.lat}&lon=${this.state.lon}`;
+
+    let url = `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${this.state.lat}&lon=${this.state.lon}`;
     axios.get(url).then((res) => {
       const data = res.data;
-      console.log(res);
-      let avg_temperature = 0;
-      let length_timeseries = data.properties.timeseries.length;
-      data.properties.timeseries.forEach((timeserie) => {
-        avg_temperature += timeserie.data.instant.details.air_temperature;
-      });
+
       this.setState({
-        instantTemperature: avg_temperature / length_timeseries,
+        instantTemperature: Math.round(
+          data.properties.timeseries[0].data.instant.details.air_temperature
+        ),
       });
-      console.log("hello");
-      console.log(data.properties.timeseries[0].data.instant.details);
     });
   };
 
