@@ -1,6 +1,6 @@
-import { React, useState } from "react";
+import { React } from "react";
 import "./SearchBar.styles.css";
-const SearchBar = ({ handleSearch, handleSubmit, handleResponse }) => {
+const SearchBar = ({ handleSearch, handleSubmit }) => {
   /* const [city, setCity] = useState();
   function handleSearch(event) {
     event.preventDefault();
@@ -13,7 +13,6 @@ const SearchBar = ({ handleSearch, handleSubmit, handleResponse }) => {
 
     //axios.get(urlCity).then(handleResponse);
   }*/
-  console.log("searchBar");
   return (
     <form className="inline" onSubmit={handleSubmit}>
       {" "}
