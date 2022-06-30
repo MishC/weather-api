@@ -6,11 +6,18 @@ function importAll(r) {
 const images = importAll(require.context("../../assets/svg", false, /\.svg$/));
 
 const WeatherImg = ({ summary }) => {
-  const image = images.filter((image) => image.includes(summary));
-  console.log(image);
+  const images1 = images.filter(
+    (image) => image.split(".")[0].split("/")[3] === summary
+  );
   return (
     <div>
-      <img src={image} alt={image} width="80" height="80" />
+      <img
+        src={images1}
+        alt={images1}
+        width="80"
+        height="80"
+        className="mb-4"
+      />
     </div>
   );
 };
