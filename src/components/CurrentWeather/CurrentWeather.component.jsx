@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import { Circles } from "react-loader-spinner";
 import SearchBar from "../SearchBar/SearchBar.component";
+import WeatherImg from "../weatherImg/WeatherImg.component";
 import "./Current.Weather.styles.css";
 
 export default class CurrentWeather extends React.Component {
@@ -102,7 +103,10 @@ export default class CurrentWeather extends React.Component {
             handleSubmit={this.handleSubmit}
           />
 
-          <h2>City: {this.state.cityShow}</h2>
+          <h3>
+            <span className="text-primary"> {this.state.cityShow}</span>
+          </h3>
+          <WeatherImg summary={this.state.summary} key={Date.now()} />
           <h3>Summary: {this.state.summary} </h3>
 
           <h3>Temperature: {this.state.instantTemperature} °C</h3>
