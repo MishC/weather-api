@@ -67,26 +67,19 @@ export default class CurrentWeather extends React.Component {
     // let urlCity = `https://nominatim.openstreetmap.org/search?q=${this.state.city}&format=geojson`;
   };
   /////
+  ///
   handleSubmit = async (event) => {
     event.preventDefault();
 
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/search?q=${this.state.city}&format=geojson`
     );
-    this.setState({
-      cityShow: response.data.features[0].properties.display_name,
-      lat: response.data.features[0].geometry.coordinates[0].toFixed(5),
-      lon: response.data.features[0].geometry.coordinates[1].toFixed(5),
-    });
-
-    //let url = `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${this.state.lat}&lon=${this.state.lon}`;
     const res = await axios.get(
-      `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${this.state.lat}&lon=${this.state.lon}`
+      `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${response.data.features[0].geometry.coordinates[0]}&lon=${response.data.features[0].geometry.coordinates[1]}`
     );
-
-    //console.log(res.data);
     this.setState({
       ready: true,
+      cityShow: response.data.features[0].properties.display_name,
       summary:
         res.data.properties.timeseries[0].data.next_1_hours.summary.symbol_code,
       instantTemperature: Math.floor(
@@ -108,12 +101,13 @@ export default class CurrentWeather extends React.Component {
             handleSearch={this.handleSearch}
             handleSubmit={this.handleSubmit}
           />
+
           <h2>City: {this.state.cityShow}</h2>
           <h3>Summary: {this.state.summary} </h3>
 
           <h3>Temperature: {this.state.instantTemperature} °C</h3>
-          <h3>Precipitation: {this.state.precipitation} </h3>
-          <h3>Wind Speed: {this.state.windSpeed} </h3>
+          <h3>Precipitation: {this.state.precipitation} mm</h3>
+          <h3>Wind Speed: {this.state.windSpeed} m/s</h3>
         </div>
       );
     } else {
