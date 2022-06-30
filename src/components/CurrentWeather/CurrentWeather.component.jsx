@@ -58,7 +58,6 @@ export default class CurrentWeather extends React.Component {
   ///////
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(this.retrievePosition);
-    console.log("Mount");
   }
   ////
   handleSearch = (event) => {
@@ -66,7 +65,6 @@ export default class CurrentWeather extends React.Component {
     this.setState({ city: event.target.value });
     // let urlCity = `https://nominatim.openstreetmap.org/search?q=${this.state.city}&format=geojson`;
   };
-  /////
   ///
   handleSubmit = async (event) => {
     event.preventDefault();
@@ -75,8 +73,10 @@ export default class CurrentWeather extends React.Component {
       `https://nominatim.openstreetmap.org/search?q=${this.state.city}&format=geojson`
     );
     const res = await axios.get(
-      `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${response.data.features[0].geometry.coordinates[0]}&lon=${response.data.features[0].geometry.coordinates[1]}`
+      `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${response.data.features[0].geometry.coordinates[1]}&lon=${response.data.features[0].geometry.coordinates[0]}`
     );
+    console.log(response.data);
+    console.log(res.data);
     this.setState({
       ready: true,
       cityShow: response.data.features[0].properties.display_name,
@@ -94,7 +94,7 @@ export default class CurrentWeather extends React.Component {
   };
 
   render() {
-    if (this.state.lat !== 0) {
+    if (this.state.cityShow) {
       return (
         <div className="current-weather">
           <SearchBar
