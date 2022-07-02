@@ -97,21 +97,36 @@ export default class CurrentWeather extends React.Component {
   render() {
     if (this.state.cityShow) {
       return (
-        <div className="current-weather">
+        <div className="current-weather  ">
           <SearchBar
             handleSearch={this.handleSearch}
             handleSubmit={this.handleSubmit}
           />
 
-          <h3>
-            <span className="text-primary"> {this.state.cityShow}</span>
-          </h3>
-          <WeatherImg summary={this.state.summary} key={Date.now()} />
-          <h3>Summary: {this.state.summary} </h3>
+          <h3 className="mb-5 text-white">{this.state.cityShow}</h3>
+          <div className="instant-weather inline  bg-white p-3">
+            <div>
+              <h5 className="text-left  ">Current condition</h5>
 
-          <h3>Temperature: {this.state.instantTemperature} °C</h3>
-          <h3>Precipitation: {this.state.precipitation} mm</h3>
-          <h3>Wind Speed: {this.state.windSpeed} m/s</h3>
+              <br />
+
+              <WeatherImg summary={this.state.summary} key={Date.now()} />
+              <h6 className="text-muted">
+                {this.state.summary.split("_")[0]}{" "}
+              </h6>
+            </div>
+            <h4 className="text-left m-4 p-5">
+              {this.state.instantTemperature} °C
+            </h4>
+            <h4 className="text-left m-4 p-5">
+              {" "}
+              {this.state.precipitation} mm
+            </h4>
+            <h4 className="text-left m-4 p-5"> {this.state.windSpeed} m/s</h4>
+          </div>
+          <div>
+            <button></button>
+          </div>
         </div>
       );
     } else {

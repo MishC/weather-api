@@ -11,13 +11,7 @@ const WeatherImg = ({ summary }) => {
   );
   return (
     <div>
-      <img
-        src={images1}
-        alt={images1}
-        width="80"
-        height="80"
-        className="mb-4"
-      />
+      <img src={images1} alt={images1} width="80" height="80" className="" />
     </div>
   );
 };
