@@ -4,7 +4,14 @@ import axios from "axios";
 import { Circles } from "react-loader-spinner";
 import SearchBar from "../SearchBar/SearchBar.component";
 import WeatherImg from "../weatherImg/WeatherImg.component";
+import ExtendedWeather from "../ExtendedWeather/ExtendedWeather.component";
+
 import "./Current.Weather.styles.css";
+
+import { ReactComponent as TemperatureImg } from "../../assets/icons/temperature-svgrepo-com.svg";
+import {ReactComponent as WindImg} from "../../assets/icons/wind-svgrepo-com.svg";
+import {ReactComponent as UmbrellaImg} from "../../assets/icons/umbrella-svgrepo-com.svg";
+
 
 export default class CurrentWeather extends React.Component {
   constructor() {
@@ -20,6 +27,9 @@ export default class CurrentWeather extends React.Component {
       summary: "",
       precipitation: 0,
       windSpeed: 0,
+      windDeg:null,
+      time: "",
+      
       // searchField:""
     };
   }
@@ -28,7 +38,7 @@ export default class CurrentWeather extends React.Component {
    setDefaultCity(response.data.city.name);
  }*/
 
-  retrievePosition = (position) => {
+  retrievePosition = async (position) => {
     const lat = position.coords.latitude.toFixed(4);
     const lon = position.coords.longitude.toFixed(4);
     this.setState({ lat: lat });
@@ -36,25 +46,28 @@ export default class CurrentWeather extends React.Component {
 
     let url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
     let url1 = `https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${lat}&lon=${lon}`;
-    axios.get(url).then((res) => {
+    const resInitial= await axios.get(url);
+    const resInitial1= await axios.get(url1);
+   
       this.setState({
         summary:
-          res.data.properties.timeseries[0].data.next_1_hours.summary
+          resInitial.data.properties.timeseries[0].data.next_1_hours.summary
             .symbol_code,
         instantTemperature: Math.floor(
-          res.data.properties.timeseries[0].data.instant.details.air_temperature
+          resInitial.data.properties.timeseries[0].data.instant.details.air_temperature
         ),
         precipitation:
-          res.data.properties.timeseries[0].data.next_1_hours.details
+        resInitial.data.properties.timeseries[0].data.next_1_hours.details
             .precipitation_amount,
         windSpeed:
-          res.data.properties.timeseries[0].data.instant.details.wind_speed,
+        resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,
+        time:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
+
       });
-    });
-    axios.get(url1).then((res) => {
-      const data1 = res.data.features[0].properties.address;
-      this.setState({ cityShow: data1.city + ", " + data1.city_district });
-    });
+   
+      const data1 = resInitial1.data.features[0].properties.address;
+      this.setState({ cityShow: data1.state + ", " + data1.country });
+    
   };
   ///////
   componentDidMount() {
@@ -78,12 +91,13 @@ export default class CurrentWeather extends React.Component {
     );
     console.log(response.data);
     console.log(res.data);
+    
     this.setState({
       ready: true,
       cityShow: response.data.features[0].properties.display_name,
       summary:
         res.data.properties.timeseries[0].data.next_1_hours.summary.symbol_code,
-      instantTemperature: Math.floor(
+      instantTemperature: Math.round(
         res.data.properties.timeseries[0].data.instant.details.air_temperature
       ),
       precipitation:
@@ -91,13 +105,16 @@ export default class CurrentWeather extends React.Component {
           .precipitation_amount,
       windSpeed:
         res.data.properties.timeseries[0].data.instant.details.wind_speed,
+        time:  res.data.properties.timeseries[0].time.slice(0,10),
     });
+    console.log(this.state.cityShow)
   };
+  
 
   render() {
     if (this.state.cityShow) {
       return (
-        <div className="current-weather  ">
+        <div className="current-weather mb-5 ">
           <SearchBar
             handleSearch={this.handleSearch}
             handleSubmit={this.handleSubmit}
@@ -106,26 +123,39 @@ export default class CurrentWeather extends React.Component {
           <h3 className="mb-5 text-white">{this.state.cityShow}</h3>
           <div className="instant-weather inline  bg-white p-3">
             <div>
-              <h5 className="text-left  ">Current condition</h5>
+              <h5 className="text-left px-5 pt-3 text-secondary  ">Current condition</h5>
 
               <br />
 
               <WeatherImg summary={this.state.summary} key={Date.now()} />
               <h6 className="text-muted">
-                {this.state.summary.split("_")[0]}{" "}
+                {this.state.summary.split("_").join(" ")}{" "}
               </h6>
             </div>
-            <h4 className="text-left m-4 p-5">
-              {this.state.instantTemperature} °C
+            <div className="text-right mt-4 pt-5">       
+                <TemperatureImg width="20" fill="gray" />
+                    </div>
+            <h4 className="text-left mt-4 pt-5 pl-1 pr-4">  
+           
+              {this.state.instantTemperature}°
             </h4>
-            <h4 className="text-left m-4 p-5">
+            
+            <div className="text-right mt-4 pt-5">       
+               <UmbrellaImg width="20" fill="gray" />
+                    </div>
+            <h4 className="text-left mt-4 pt-5 pl-1 pr-4">
               {" "}
+             
               {this.state.precipitation} mm
             </h4>
-            <h4 className="text-left m-4 p-5"> {this.state.windSpeed} m/s</h4>
+            <div className="text-right mt-4  pt-5">       
+            <WindImg width="20"  fill="gray" />
+                    </div>
+            <h4 className="text-left mt-4 pt-5 pl-1 pr-4"> 
+            {this.state.windSpeed} m/s</h4>
           </div>
           <div>
-            <button></button>
+                  <ExtendedWeather time={this.state.time}/>
           </div>
         </div>
       );
