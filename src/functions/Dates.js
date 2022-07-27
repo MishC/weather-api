@@ -1,26 +1,30 @@
 const Dates=(x) => {
-        let now = new Date();       
-        let day = now.getDay()+x; //Day of the week, number 0-6
-        let month = now.getMonth(); //current month, number of 0-11
+  const mSeconds = (new Date()).getTime();
+  // initialize date object
+  const objDate = new Date();
+  objDate.setTime(mSeconds + 86400000 * x); 
+    let dayMonth = objDate.getUTCDate(); //getUTCDate() returns the day of the month of a date, 
+                                        //according to UTC
+        let day = objDate.getDay(); //Day of the week, number 0-6
+        let month = objDate.getMonth(); //current month, number of 0-11
        
-        let dayMonth = now.getUTCDate()+x; //getUTCDate() returns the day of the month of a date, 
-                                        //according to UTC 
+       
 
 
-        let dayWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        let months = [
-          "jan",
-          "feb",
-          "mar",
-          "apr",
-          "may",
-          "june",
-          "july",
-          "aug",
-          "sep",
-          "oct",
-          "nov",
-          "dec",
+        const dayWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
         ];
         let weekDay = dayWeek[day];
         let currentMonth = months[month];
