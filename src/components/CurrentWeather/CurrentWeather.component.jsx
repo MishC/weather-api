@@ -5,6 +5,7 @@ import { Circles } from "react-loader-spinner";
 import SearchBar from "../SearchBar/SearchBar.component";
 import WeatherImg from "../weatherImg/WeatherImg.component";
 import ExtendedWeather from "../ExtendedWeather/ExtendedWeather.component";
+import {NextDays} from "../../functions/NextDays";
 
 import "./Current.Weather.styles.css";
 
@@ -29,6 +30,8 @@ export default class CurrentWeather extends React.Component {
       windSpeed: 0,
       windDeg:null,
       time: "",
+      date: "",
+      
       
       // searchField:""
     };
@@ -61,13 +64,14 @@ export default class CurrentWeather extends React.Component {
             .precipitation_amount,
         windSpeed:
         resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,
-        time:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
-
+        date:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
+        
       });
    
       const data1 = resInitial1.data.features[0].properties.address;
       this.setState({ cityShow: data1.state + ", " + data1.country });
-    
+      
+      console.log(NextDays(resInitial.data.properties.timeseries, 1, "night"))
   };
   ///////
   componentDidMount() {
@@ -105,9 +109,11 @@ export default class CurrentWeather extends React.Component {
           .precipitation_amount,
       windSpeed:
         res.data.properties.timeseries[0].data.instant.details.wind_speed,
-        time:  res.data.properties.timeseries[0].time.slice(0,10),
+       date:  res.data.properties.timeseries[0].time.slice(0,10),
+
     });
-    console.log(this.state.cityShow)
+    
+    //console.log(this.state.date)
   };
   
 

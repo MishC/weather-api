@@ -1,7 +1,7 @@
 import { React } from "react";
-import {Dates} from "../Dates/Dates.js";
+import {Dates} from "../../functions/Dates.js";
+import  {PartOfDay} from "../../functions/PartOfDay";
 const ExtendedWeather = () => {
-    console.log(Dates(0));
   return(<div className="ExtendedWeather mt-5 mx-4">
                 <table className="table">
             <thead>
