@@ -1,4 +1,4 @@
-const Dates=(x) => {
+const Dates=(x, output) => {
   const mSeconds = (new Date()).getTime();
   // initialize date object
   const objDate = new Date();
@@ -28,8 +28,10 @@ const Dates=(x) => {
         ];
         let weekDay = dayWeek[day];
         let currentMonth = months[month];
-      
-        return `${weekDay} ${dayMonth}. ${currentMonth}`;
+      switch(output){ case "daymonth": return dayMonth;
+      case "weekday":return weekDay;
+      case "currentMonth":return currentMonth;
+       default: return `${weekDay} ${dayMonth}. ${currentMonth}`;}
       }
     
 export {Dates}

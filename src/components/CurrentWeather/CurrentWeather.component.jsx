@@ -31,6 +31,12 @@ export default class CurrentWeather extends React.Component {
       windDeg:null,
       time: "",
       date: "",
+      day0:{},
+      day1:{},
+      day2:{},
+      day3:{},
+      day4:{},
+      day5:{},
       
       
       // searchField:""
@@ -51,7 +57,7 @@ export default class CurrentWeather extends React.Component {
     let url1 = `https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${lat}&lon=${lon}`;
     const resInitial= await axios.get(url);
     const resInitial1= await axios.get(url1);
-   
+   console.log(resInitial);
       this.setState({
         summary:
           resInitial.data.properties.timeseries[0].data.next_1_hours.summary
@@ -65,14 +71,19 @@ export default class CurrentWeather extends React.Component {
         windSpeed:
         resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,
         date:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
-        
+        day0:NextDays(resInitial.data.properties.timeseries, 0),
+        day1:NextDays(resInitial.data.properties.timeseries, 1),
+        day2:NextDays(resInitial.data.properties.timeseries, 2),
+        day3:NextDays(resInitial.data.properties.timeseries, 3),
+        day4:NextDays(resInitial.data.properties.timeseries, 4),
+        day5:NextDays(resInitial.data.properties.timeseries, 5),
+
+
       });
-   
       const data1 = resInitial1.data.features[0].properties.address;
       this.setState({ cityShow: data1.state + ", " + data1.country });
-      
-      console.log(NextDays(resInitial.data.properties.timeseries, 1, "night"))
-  };
+      console.log(resInitial1);
+console.log(resInitial)  };
   ///////
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(this.retrievePosition);
@@ -110,15 +121,21 @@ export default class CurrentWeather extends React.Component {
       windSpeed:
         res.data.properties.timeseries[0].data.instant.details.wind_speed,
        date:  res.data.properties.timeseries[0].time.slice(0,10),
+       day0:NextDays(res.data.properties.timeseries, 0),
+        day1:NextDays(res.data.properties.timeseries, 1),
+        day2:NextDays(res.data.properties.timeseries, 2),
+        day3:NextDays(res.data.properties.timeseries, 3),
+        day4:NextDays(res.data.properties.timeseries, 4),
+        day5:NextDays(res.data.properties.timeseries, 5),
 
     });
     
-    //console.log(this.state.date)
   };
   
+  render() { const {cityShow,summary,instantTemperature,windSpeed,precipitation,day0,day1,
+  day2,day3,day4,day5}=this.state;
 
-  render() {
-    if (this.state.cityShow) {
+    if (cityShow) {
       return (
         <div className="current-weather mb-5 ">
           <SearchBar
@@ -126,16 +143,16 @@ export default class CurrentWeather extends React.Component {
             handleSubmit={this.handleSubmit}
           />
 
-          <h3 className="mb-5 text-white">{this.state.cityShow}</h3>
+          <h3 className="mb-5 text-white">{cityShow}</h3>
           <div className="instant-weather inline  bg-white p-3">
             <div>
               <h5 className="text-left px-5 pt-3 text-secondary  ">Current condition</h5>
 
               <br />
 
-              <WeatherImg summary={this.state.summary} key={Date.now()} />
+              <WeatherImg summary={summary} key={Date.now()} />
               <h6 className="text-muted">
-                {this.state.summary.split("_").join(" ")}{" "}
+                {summary.split("_").join(" ")}{" "}
               </h6>
             </div>
             <div className="text-right mt-4 pt-5">       
@@ -143,7 +160,7 @@ export default class CurrentWeather extends React.Component {
                     </div>
             <h4 className="text-left mt-4 pt-5 pl-1 pr-4">  
            
-              {this.state.instantTemperature}°
+              {instantTemperature}°
             </h4>
             
             <div className="text-right mt-4 pt-5">       
@@ -152,16 +169,17 @@ export default class CurrentWeather extends React.Component {
             <h4 className="text-left mt-4 pt-5 pl-1 pr-4">
               {" "}
              
-              {this.state.precipitation} mm
+              {precipitation} mm
             </h4>
             <div className="text-right mt-4  pt-5">       
             <WindImg width="20"  fill="gray" />
                     </div>
             <h4 className="text-left mt-4 pt-5 pl-1 pr-4"> 
-            {this.state.windSpeed} m/s</h4>
+            {windSpeed} m/s</h4>
           </div>
           <div>
-                  <ExtendedWeather time={this.state.time}/>
+                  <ExtendedWeather day0={day0} day1={day1} day2={day2} day3={day3} day4={day4}
+                  day5={day5}/>
           </div>
         </div>
       );

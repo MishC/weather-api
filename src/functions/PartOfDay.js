@@ -3,7 +3,7 @@ const PartOfDay=(time)=>{
  
     const timeShift=TimeShift();   
     const timeShifted=parseInt(time+timeShift);
-   console.log(timeShifted);
+  
 
    if (timeShifted<6){
  
@@ -18,10 +18,6 @@ const PartOfDay=(time)=>{
                         return "evening";}
                        else return "morning";
                      
-
-    
-    
-
 
 }
 export {PartOfDay}
