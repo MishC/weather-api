@@ -19,7 +19,7 @@ const NextDays=(timeseries,x,lat,lon)=>{
    const timeShift=()=>{
     var config = {
         method: 'get',
-        url: `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${timestamp}&language=es&key=AIzaSyDvQnTRBUjrJB2m1SsDlBZNxMgulpZCqfs`,
+        url: `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${timestamp}&language=en&key=YOUR_API_KEY`,
         headers: { }
       };
       
