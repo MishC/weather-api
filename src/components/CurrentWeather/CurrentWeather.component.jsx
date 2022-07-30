@@ -31,12 +31,8 @@ export default class CurrentWeather extends React.Component {
       windDeg:null,
       time: "",
       date: "",
-      day0:{},
-      day1:{},
-      day2:{},
-      day3:{},
-      day4:{},
-      day5:{},
+    
+      days:[],
       
       
       // searchField:""
@@ -48,8 +44,8 @@ export default class CurrentWeather extends React.Component {
  }*/
 
   retrievePosition = async (position) => {
-    const lat = position.coords.latitude.toFixed(4);
-    const lon = position.coords.longitude.toFixed(4);
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
     this.setState({ lat: lat });
     this.setState({ lon: lon });
 
@@ -57,8 +53,9 @@ export default class CurrentWeather extends React.Component {
     let url1 = `https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${lat}&lon=${lon}`;
     const resInitial= await axios.get(url);
     const resInitial1= await axios.get(url1);
-   console.log(resInitial);
+    
       this.setState({
+        ready:true,
         summary:
           resInitial.data.properties.timeseries[0].data.next_1_hours.summary
             .symbol_code,
@@ -71,13 +68,12 @@ export default class CurrentWeather extends React.Component {
         windSpeed:
         resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,
         date:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
-        day0:NextDays(resInitial.data.properties.timeseries, 0),
-        day1:NextDays(resInitial.data.properties.timeseries, 1),
-        day2:NextDays(resInitial.data.properties.timeseries, 2),
-        day3:NextDays(resInitial.data.properties.timeseries, 3),
-        day4:NextDays(resInitial.data.properties.timeseries, 4),
-        day5:NextDays(resInitial.data.properties.timeseries, 5),
-
+        days:[NextDays(resInitial.data.properties.timeseries, 0),
+        NextDays(resInitial.data.properties.timeseries, 1,this.state.lat, this.state.lon),
+        NextDays(resInitial.data.properties.timeseries, 2,this.state.lat, this.state.lon),
+        NextDays(resInitial.data.properties.timeseries, 3,this.state.lat, this.state.lon),
+        NextDays(resInitial.data.properties.timeseries, 4, this.state.lat, this.state.lon),
+        NextDays(resInitial.data.properties.timeseries, 5,this.state.lat, this.state.lon)]
 
       });
       const data1 = resInitial1.data.features[0].properties.address;
@@ -109,6 +105,8 @@ console.log(resInitial)  };
     
     this.setState({
       ready: true,
+      lon:response.data.features[0].geometry.coordinates[0],
+      lat:response.data.features[0].geometry.coordinates[1],
       cityShow: response.data.features[0].properties.display_name,
       summary:
         res.data.properties.timeseries[0].data.next_1_hours.summary.symbol_code,
@@ -121,21 +119,20 @@ console.log(resInitial)  };
       windSpeed:
         res.data.properties.timeseries[0].data.instant.details.wind_speed,
        date:  res.data.properties.timeseries[0].time.slice(0,10),
-       day0:NextDays(res.data.properties.timeseries, 0),
-        day1:NextDays(res.data.properties.timeseries, 1),
-        day2:NextDays(res.data.properties.timeseries, 2),
-        day3:NextDays(res.data.properties.timeseries, 3),
-        day4:NextDays(res.data.properties.timeseries, 4),
-        day5:NextDays(res.data.properties.timeseries, 5),
+       days:[NextDays(res.data.properties.timeseries, 0, this.state.lat, this.state.lon),
+        NextDays(res.data.properties.timeseries, 1, this.state.lat, this.state.lon ),
+        NextDays(res.data.properties.timeseries, 2,this.state.lat, this.state.lon),
+        NextDays(res.data.properties.timeseries, 3,this.state.lat, this.state.lon),
+        NextDays(res.data.properties.timeseries, 4,this.state.lat, this.state.lon),
+        NextDays(res.data.properties.timeseries, 5),this.state.lat, this.state.lon]
 
     });
     
   };
   
-  render() { const {cityShow,summary,instantTemperature,windSpeed,precipitation,day0,day1,
-  day2,day3,day4,day5}=this.state;
+  render() { const {cityShow,summary,instantTemperature,windSpeed,precipitation, days,ready}=this.state;
 
-    if (cityShow) {
+    if (ready) {
       return (
         <div className="current-weather mb-5 ">
           <SearchBar
@@ -178,8 +175,7 @@ console.log(resInitial)  };
             {windSpeed} m/s</h4>
           </div>
           <div>
-                  <ExtendedWeather day0={day0} day1={day1} day2={day2} day3={day3} day4={day4}
-                  day5={day5}/>
+                  <ExtendedWeather days={days}/>
           </div>
         </div>
       );

@@ -1,8 +1,8 @@
 import { React } from "react";
 import {Dates} from "../../functions/Dates.js";
 //import  {PartOfDay} from "../../functions/PartOfDay";
-const ExtendedWeather = ({day0,day1,day2,day3,day4,day5}) => {
-    console.log(day0.evening)
+const ExtendedWeather = ({days}) => {
+    console.log(days);
   return(<div className="ExtendedWeather mt-5 mx-4">
                 <table className="table">
             <thead>
@@ -30,7 +30,7 @@ const ExtendedWeather = ({day0,day1,day2,day3,day4,day5}) => {
     <td>{" "}</td>):( <td>{day0.morning[0].data.next_1_hours.summary.symbol_code}</td>)}
        {day0.afternoon===undefined?(
     <td>{" "}</td>):( <td>{day0.afternoon[0].data.next_1_hours.summary.symbol_code}</td>)}<td>{day0.evening.length>0?day0.evening[0].data.next_1_hours.summary.symbol_code:" "}</td>
-       ""*/}
+       ""
     </tr>
     <tr>
     <th scope="row">{Dates(1)}</th>
@@ -73,7 +73,7 @@ const ExtendedWeather = ({day0,day1,day2,day3,day4,day5}) => {
       <td>{day5.morning[0].data.next_6_hours.summary.symbol_code}</td>
       <td>{day5.afternoon[0].data.next_6_hours.summary.symbol_code}</td>
 <td>{day5.evening[0].data.next_6_hours.summary.symbol_code}</td>
-      <td></td>
+      <td></td>*/}
     </tr>
     </tbody>
               </table>
