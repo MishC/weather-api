@@ -5,7 +5,7 @@ import { Circles } from "react-loader-spinner";
 import SearchBar from "../SearchBar/SearchBar.component";
 import WeatherImg from "../weatherImg/WeatherImg.component";
 import ExtendedWeather from "../ExtendedWeather/ExtendedWeather.component";
-//import {NextDays} from "../../functions/NextDays";
+import {NextDays} from "../../functions/NextDays";
 import {TimeStamp} from "../../functions/TimeStamp";
 
 import "./Current.Weather.styles.css";
@@ -32,8 +32,8 @@ export default class CurrentWeather extends React.Component {
       windDeg:null,
       time: "",
       date: "",
-    
-      timeshifts:[],
+      timeShifts:[],
+      days:[]
       
       
       // searchField:""
@@ -43,6 +43,11 @@ export default class CurrentWeather extends React.Component {
   /*function handleDefault(response) {
    setDefaultCity(response.data.city.name);
  }*/
+ getTimeOffset= async (url)=>{
+  const request=await axios(url);
+const result=await (request.data.dstOffset+request.data.rawOffset)/3600;
+return result;
+}
 
   retrievePosition = async (position) => {
     const lat = position.coords.latitude;
@@ -55,19 +60,18 @@ export default class CurrentWeather extends React.Component {
     let urls = [`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`,
     `https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${lat}&lon=${lon}`,
   ];
-  
+
+
+  const urls1=[...Array(6).keys()].map((i)=>{
+  return `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${TimeStamp(i)}&language=en&key=AIzaSyDvQnTRBUjrJB2m1SsDlBZNxMgulpZCqfs`
+  });
+  //console.log(urls1);
+ 
+let arrayOfTimeshifts=await Promise.all(urls1.map(this.getTimeOffset));
+
     const resInitial= await axios.get(urls[0]);
    
-    let timeshifts=[];
-    await Promise.all(
-     [...Array(6).keys()].map(i=>{ 
-       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${TimeStamp(i)}&language=en&key=YOUR_API_KEY`).then(
-      res=>{timeshifts.push(res.data.dstOffset+res.data.rawOffset)});
-      //  let d= new Date(TimeStamp(i)*1000);
-      // console.log(d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear());
-     return timeshifts
-      }));
-    console.log(timeshifts);
+  
       this.setState({
         ready:true,
         summary:
@@ -83,13 +87,12 @@ export default class CurrentWeather extends React.Component {
         resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,  
 
         date:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
-        timeshifts:timeshifts,
-      /* { days:[NextDays(resInitial.data.properties.timeseries,  ),
-        NextDays(resInitial.data.properties.timeseries, 1,lat, lon),
-        NextDays(resInitial.data.properties.timeseries, 2,lat, lon),
-        NextDays(resInitial.data.properties.timeseries, 3,lat, lon),
-        NextDays(resInitial.data.properties.timeseries, 4, lat, lon),
-        NextDays(resInitial.data.properties.timeseries, 5,lat, lon)]}*/
+      days:[NextDays(resInitial.data.properties.timeseries, 0,arrayOfTimeshifts ),
+        NextDays(resInitial.data.properties.timeseries, 1, arrayOfTimeshifts),
+        NextDays(resInitial.data.properties.timeseries, 2,arrayOfTimeshifts),
+        NextDays(resInitial.data.properties.timeseries, 3,arrayOfTimeshifts),
+        NextDays(resInitial.data.properties.timeseries, 4,arrayOfTimeshifts),
+      NextDays(resInitial.data.properties.timeseries, 5,arrayOfTimeshifts)]
 
       });
      await axios.get(urls[1]).then(response=>
@@ -97,7 +100,8 @@ export default class CurrentWeather extends React.Component {
         this.setState({cityShow:  response.data.features[0].properties.address.city + ", " +  response.data.features[0].properties.address.country
     }));
       
-console.log(resInitial)  };
+//console.log(resInitial) 
+ };
   ///////
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(this.retrievePosition);
@@ -118,10 +122,12 @@ console.log(resInitial)  };
     const res = await axios.get(
       `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${response.data.features[0].geometry.coordinates[1]}&lon=${response.data.features[0].geometry.coordinates[0]}`
     );
-    console.log(response.data);
-    console.log(res.data);
-   
+    const urls2=[...Array(6).keys()].map((i)=>{
+      return `https://maps.googleapis.com/maps/api/timezone/json?location=${response.data.features[0].geometry.coordinates[1]},${response.data.features[0].geometry.coordinates[0]}&timestamp=${TimeStamp(i)}&language=en&key=AIzaSyDvQnTRBUjrJB2m1SsDlBZNxMgulpZCqfs`
+      });
+      //console.log(urls1);
     
+   let arrayOfTimeshifts=await Promise.all(urls2.map(this.getTimeOffset));
     this.setState({
       ready: true,
       lon:response.data.features[0].geometry.coordinates[0],
@@ -138,25 +144,15 @@ console.log(resInitial)  };
       windSpeed:
         res.data.properties.timeseries[0].data.instant.details.wind_speed,
        date:  res.data.properties.timeseries[0].time.slice(0,10),
-       /*{days:[NextDays(res.data.properties.timeseries, 0, response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
-        NextDays(res.data.properties.timeseries, 1, response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0] ),
-        NextDays(res.data.properties.timeseries, 2,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
-        NextDays(res.data.properties.timeseries, 3,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
-        NextDays(res.data.properties.timeseries, 4,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
-        NextDays(res.data.properties.timeseries, 5,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0])]
-      }*/
+       days:[NextDays(res.data.properties.timeseries, 0, arrayOfTimeshifts),
+        NextDays(res.data.properties.timeseries, 1, arrayOfTimeshifts ),
+        NextDays(res.data.properties.timeseries, 2,arrayOfTimeshifts),
+        NextDays(res.data.properties.timeseries, 3,arrayOfTimeshifts),
+        NextDays(res.data.properties.timeseries, 4,arrayOfTimeshifts),
+        NextDays(res.data.properties.timeseries, 5,arrayOfTimeshifts)]
+      
     });
-    let timeshifts=[];
-    await Promise.all(
-     [...Array(6).keys()].map(i=>{ 
-       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${this.state.lat},${this.state.lon}&timestamp=${TimeStamp(i)}&language=en&key=YOUR_API_KEY`).then(
-      res=>{timeshifts.push(res.data.dstOffset+res.data.rawOffset)});
-      //  let d= new Date(TimeStamp(i)*1000);
-      // console.log(d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear());
-     return timeshifts
-      }));
-    
-  };
+  }
   
   render() { const {cityShow,summary,instantTemperature,windSpeed,precipitation, days,ready}=this.state;
 
