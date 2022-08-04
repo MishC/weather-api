@@ -5,7 +5,8 @@ import { Circles } from "react-loader-spinner";
 import SearchBar from "../SearchBar/SearchBar.component";
 import WeatherImg from "../weatherImg/WeatherImg.component";
 import ExtendedWeather from "../ExtendedWeather/ExtendedWeather.component";
-import {NextDays} from "../../functions/NextDays";
+//import {NextDays} from "../../functions/NextDays";
+import {TimeStamp} from "../../functions/TimeStamp";
 
 import "./Current.Weather.styles.css";
 
@@ -21,7 +22,7 @@ export default class CurrentWeather extends React.Component {
       instantWeather: {},
       instantTemperature: 0,
       city: "",
-      cityShow: "",
+      cityShow: " ",
       lat: 0,
       lon: 0,
       ready: false,
@@ -46,14 +47,27 @@ export default class CurrentWeather extends React.Component {
   retrievePosition = async (position) => {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
+   // const timestamp=TimeStamp(0);
+
     this.setState({ lat: lat });
     this.setState({ lon: lon });
 
-    let url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
-    let url1 = `https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${lat}&lon=${lon}`;
-    const resInitial= await axios.get(url);
-    const resInitial1= await axios.get(url1);
-    
+    let urls = [`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`,
+    `https://nominatim.openstreetmap.org/reverse?format=geojson&lat=${lat}&lon=${lon}`,
+  ];
+  
+    const resInitial= await axios.get(urls[0]);
+   
+    let timeshifts=[];
+    await Promise.all(
+     [...Array(6).keys()].map(i=>{ 
+       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${TimeStamp(i)}&language=en&key=AIzaSyDvQnTRBUjrJB2m1SsDlBZNxMgulpZCqfs`).then(
+      res=>{timeshifts.push(res.data.dstOffset+res.data.rawOffset)});
+      //  let d= new Date(TimeStamp(i)*1000);
+      // console.log(d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear());
+     return timeshifts
+      }));
+    console.log(timeshifts);
       this.setState({
         ready:true,
         summary:
@@ -66,19 +80,22 @@ export default class CurrentWeather extends React.Component {
         resInitial.data.properties.timeseries[0].data.next_1_hours.details
             .precipitation_amount,
         windSpeed:
-        resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,
+        resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,  
+
         date:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
-        days:[NextDays(resInitial.data.properties.timeseries, 0),
-        NextDays(resInitial.data.properties.timeseries, 1,this.state.lat, this.state.lon),
-        NextDays(resInitial.data.properties.timeseries, 2,this.state.lat, this.state.lon),
-        NextDays(resInitial.data.properties.timeseries, 3,this.state.lat, this.state.lon),
-        NextDays(resInitial.data.properties.timeseries, 4, this.state.lat, this.state.lon),
-        NextDays(resInitial.data.properties.timeseries, 5,this.state.lat, this.state.lon)]
+      /* { days:[NextDays(resInitial.data.properties.timeseries, 0),
+        NextDays(resInitial.data.properties.timeseries, 1,lat, lon),
+        NextDays(resInitial.data.properties.timeseries, 2,lat, lon),
+        NextDays(resInitial.data.properties.timeseries, 3,lat, lon),
+        NextDays(resInitial.data.properties.timeseries, 4, lat, lon),
+        NextDays(resInitial.data.properties.timeseries, 5,lat, lon)]}*/
 
       });
-      const data1 = resInitial1.data.features[0].properties.address;
-      this.setState({ cityShow: data1.state + ", " + data1.country });
-      console.log(resInitial1);
+     await axios.get(urls[1]).then(response=>
+
+        this.setState({cityShow:  response.data.features[0].properties.address.city + ", " +  response.data.features[0].properties.address.country
+    }));
+      
 console.log(resInitial)  };
   ///////
   componentDidMount() {
@@ -119,13 +136,13 @@ console.log(resInitial)  };
       windSpeed:
         res.data.properties.timeseries[0].data.instant.details.wind_speed,
        date:  res.data.properties.timeseries[0].time.slice(0,10),
-       days:[NextDays(res.data.properties.timeseries, 0, this.state.lat, this.state.lon),
-        NextDays(res.data.properties.timeseries, 1, this.state.lat, this.state.lon ),
-        NextDays(res.data.properties.timeseries, 2,this.state.lat, this.state.lon),
-        NextDays(res.data.properties.timeseries, 3,this.state.lat, this.state.lon),
-        NextDays(res.data.properties.timeseries, 4,this.state.lat, this.state.lon),
-        NextDays(res.data.properties.timeseries, 5),this.state.lat, this.state.lon]
-
+       /*{days:[NextDays(res.data.properties.timeseries, 0, response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
+        NextDays(res.data.properties.timeseries, 1, response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0] ),
+        NextDays(res.data.properties.timeseries, 2,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
+        NextDays(res.data.properties.timeseries, 3,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
+        NextDays(res.data.properties.timeseries, 4,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0]),
+        NextDays(res.data.properties.timeseries, 5,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0])]
+      }*/
     });
     
   };
