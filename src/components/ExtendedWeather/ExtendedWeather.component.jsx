@@ -1,8 +1,8 @@
 import { React } from "react";
-import {Dates} from "../../functions/Dates.js";
+import {Dates} from "../../functions/Dates";
 //import  {PartOfDay} from "../../functions/PartOfDay";
 const ExtendedWeather = ({days}) => {
-    console.log(days);
+   console.log(days[0].evening[0].data);
   return(<div className="ExtendedWeather mt-5 mx-4">
                 <table className="table">
             <thead>
@@ -22,59 +22,13 @@ const ExtendedWeather = ({days}) => {
     </tr>
   </thead>
   <tbody>
-    <tr>
-      {/*" <th scope="row">Today {Dates(0)}</th>
-       {day0.night===undefined?(
-    <td>{" "}</td>):( <td>{day0.night[0].data.next_1_hours.summary.symbol_code}</td>)}
-       {day0.morning===undefined?(
-    <td>{" "}</td>):( <td>{day0.morning[0].data.next_1_hours.summary.symbol_code}</td>)}
-       {day0.afternoon===undefined?(
-    <td>{" "}</td>):( <td>{day0.afternoon[0].data.next_1_hours.summary.symbol_code}</td>)}<td>{day0.evening.length>0?day0.evening[0].data.next_1_hours.summary.symbol_code:" "}</td>
-       ""
-    </tr>
-    <tr>
-    <th scope="row">{Dates(1)}</th>
-      <td>{day1.night[0].data.next_1_hours.summary.symbol_code}</td>
-      <td>{day1.morning[0].data.next_1_hours.summary.symbol_code}</td>
-      <td>{day1.afternoon[0].data.next_1_hours.summary.symbol_code}</td>
-      <td>{day1.evening[0].data.next_1_hours.summary.symbol_code}</td>
-
+    {[...Array(6).keys()].map(i=>{if (i>0){return(<tr> <th scope="row">Today {Dates(i)}</th>
+    <td>{days[i].night[0].data.next_1_hours.summary.symbol_code}</td>
+    <td>{days[i].morning[0].data.next_1_hours.summary.symbol_code}</td>
+    <td>{days[i].afternoon[0].data.next_1_hours.summary.symbol_code}</td>
+    <td>{days[i].evening[0].data.next_1_hours.summary.symbol_code}</td>
+    </tr>)} else return null})}
       
-    </tr>
-    <tr>
-      <th scope="row">{Dates(2)}</th>
-      <td>{day2.night[0].data.next_1_hours.summary.symbol_code}</td>
-      <td>{day2.morning[0].data.next_1_hours.summary.symbol_code}</td>
-      <td>{day2.afternoon[0].data.next_1_hours.summary.symbol_code}</td>
-      <td>{day2.evening[0].data.next_1_hours.summary.symbol_code}</td> 
-
-    </tr>
-    <tr>
-      <th scope="row">{Dates(3)}</th>
-      <td>{day3.night[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day3.morning[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day3.afternoon[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day3.evening[0].data.next_6_hours.summary.symbol_code}</td> 
-  <td></td>
-  <td></td>
-  <td></td>
-    </tr>
-    <tr>
-     <th scope="row">{Dates(4)}</th>
-     <td>{day4.night[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day4.morning[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day4.afternoon[0].data.next_6_hours.summary.symbol_code}</td>
-<td>{day4.evening[0].data.next_6_hours.summary.symbol_code}</td>
-
-    </tr>
-    <tr>
-      <th scope="row">{Dates(5)}</th>
-      <td>{day5.night[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day5.morning[0].data.next_6_hours.summary.symbol_code}</td>
-      <td>{day5.afternoon[0].data.next_6_hours.summary.symbol_code}</td>
-<td>{day5.evening[0].data.next_6_hours.summary.symbol_code}</td>
-      <td></td>*/}
-    </tr>
     </tbody>
               </table>
 
