@@ -2,7 +2,7 @@ import { React } from "react";
 import {Dates} from "../../functions/Dates";
 //import  {PartOfDay} from "../../functions/PartOfDay";
 const ExtendedWeather = ({days}) => {
-   console.log(days[0].evening[0].data);
+   console.log(days[1].evening[0].data);
   return(<div className="ExtendedWeather mt-5 mx-4">
                 <table className="table">
             <thead>
@@ -22,12 +22,15 @@ const ExtendedWeather = ({days}) => {
     </tr>
   </thead>
   <tbody>
-    {[...Array(6).keys()].map(i=>{if (i>0){return(<tr> <th scope="row">Today {Dates(i)}</th>
-    <td>{days[i].night[0].data.next_1_hours.summary.symbol_code}</td>
-    <td>{days[i].morning[0].data.next_1_hours.summary.symbol_code}</td>
-    <td>{days[i].afternoon[0].data.next_1_hours.summary.symbol_code}</td>
-    <td>{days[i].evening[0].data.next_1_hours.summary.symbol_code}</td>
-    </tr>)} else return null})}
+    {[...Array(6).keys()].map(i=>{return(<tr> 
+        <th scope="row">Today {Dates(i)}</th>
+    {(days[i].night[0])?(<td>{days[i].night[0].data.next_1_hours.summary.symbol_code}</td>):
+    <td>{""}</td>}
+ {(days[i].morning[0])?(<td>{days[i].morning[0].data.next_1_hours.summary.symbol_code}</td>):
+    <td>{""}</td>}    {(days[i].afternoon[0])?(<td>{days[i].afternoon[0].data.next_1_hours.summary.symbol_code}</td>):
+    <td>{""}</td>}
+ {(days[i].evening[0])?(<td>{days[i].evening[0].data.next_1_hours.summary.symbol_code}</td>):
+    <td>{""}</td>}    </tr>)}) }
       
     </tbody>
               </table>
