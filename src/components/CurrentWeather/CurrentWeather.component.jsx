@@ -33,7 +33,7 @@ export default class CurrentWeather extends React.Component {
       time: "",
       date: "",
     
-      days:[],
+      timeshifts:[],
       
       
       // searchField:""
@@ -61,7 +61,7 @@ export default class CurrentWeather extends React.Component {
     let timeshifts=[];
     await Promise.all(
      [...Array(6).keys()].map(i=>{ 
-       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${TimeStamp(i)}&language=en&key=AIzaSyDvQnTRBUjrJB2m1SsDlBZNxMgulpZCqfs`).then(
+       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lon}&timestamp=${TimeStamp(i)}&language=en&key=YOUR_API_KEY`).then(
       res=>{timeshifts.push(res.data.dstOffset+res.data.rawOffset)});
       //  let d= new Date(TimeStamp(i)*1000);
       // console.log(d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear());
@@ -83,7 +83,8 @@ export default class CurrentWeather extends React.Component {
         resInitial.data.properties.timeseries[0].data.instant.details.wind_speed,  
 
         date:  resInitial.data.properties.timeseries[0].time.slice(4,10).split("-").reverse().join("."),
-      /* { days:[NextDays(resInitial.data.properties.timeseries, 0),
+        timeshifts:timeshifts,
+      /* { days:[NextDays(resInitial.data.properties.timeseries,  ),
         NextDays(resInitial.data.properties.timeseries, 1,lat, lon),
         NextDays(resInitial.data.properties.timeseries, 2,lat, lon),
         NextDays(resInitial.data.properties.timeseries, 3,lat, lon),
@@ -119,6 +120,7 @@ console.log(resInitial)  };
     );
     console.log(response.data);
     console.log(res.data);
+   
     
     this.setState({
       ready: true,
@@ -144,6 +146,15 @@ console.log(resInitial)  };
         NextDays(res.data.properties.timeseries, 5,response.data.features[0].geometry.coordinates[1], response.data.features[0].geometry.coordinates[0])]
       }*/
     });
+    let timeshifts=[];
+    await Promise.all(
+     [...Array(6).keys()].map(i=>{ 
+       axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${this.state.lat},${this.state.lon}&timestamp=${TimeStamp(i)}&language=en&key=YOUR_API_KEY`).then(
+      res=>{timeshifts.push(res.data.dstOffset+res.data.rawOffset)});
+      //  let d= new Date(TimeStamp(i)*1000);
+      // console.log(d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear());
+     return timeshifts
+      }));
     
   };
   
