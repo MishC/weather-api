@@ -1,4 +1,4 @@
-import { React } from "react";
+//import React from "react";
 import "./SearchBar.styles.css";
 const SearchBar = ({ handleSearch, handleSubmit }) => {
   return (

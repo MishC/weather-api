@@ -1,0 +1,11 @@
+table {
+  padding: 20px;
+  vertical-align: middle;
+}
+td {
+  vertical-align: middle;
+}
+.daily-weather-list-item__temperature {
+  font-size: 1.4rem;
+  line-height: 2.1333333333rem;
+}
