@@ -66,7 +66,6 @@ export default class CurrentWeather extends React.Component {
         i
       )}&language=en&key=AIzaSyDvQnTRBUjrJB2m1SsDlBZNxMgulpZCqfs`;
     });
-    console.log(urls1);
 
     let arrayOfTimeshifts = await Promise.all(urls1.map(this.getTimeOffset));
     console.log(arrayOfTimeshifts);

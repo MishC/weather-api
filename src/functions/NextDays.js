@@ -23,13 +23,13 @@ const NextDays = (timeseries, dayX, timeshifts) => {
   console.log(timeLocal(hours));
   const timeLocalRounded = (h) => {
     h = h - 6;
-    if (timeLocal(h) >= 5 && timeLocal(h) <= 12) {
+    if (timeLocal(h) >= 5 && timeLocal(h) < 10) {
       return 6;
     } //morning
-    else if (timeLocal(h) > 12 && timeLocal(h) < 17) {
+    else if (timeLocal(h) >= 10 && timeLocal(h) < 19) {
       return 12;
     } //afternoon
-    else if (timeLocal(h) >= 17 && timeLocal(h) < 24) {
+    else if (timeLocal(h) >= 19 && timeLocal(h) < 24) {
       return 18;
     } //evening
     else {
@@ -63,23 +63,29 @@ const NextDays = (timeseries, dayX, timeshifts) => {
   //    nextDay.filter(day=>{return parseInt(day.time.slice(11,13))===timeLocalRounded(i)}))});
   // const dayparts=[2,10,14,19].map(i=>{return dayPart(i)});
 
-  const finalResult = {
+  let finalResult = {
     night: nextDay.filter((day) => {
       console.log(parseInt(day.time.slice(11, 13)));
       return parseInt(day.time.slice(11, 13)) === timeLocalRounded(3);
     }),
     morning: nextDay.filter((day) => {
-      console.log(parseInt(day.time.slice(11, 13)) === timeLocalRounded(10));
-      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(10);
+      console.log(parseInt(day.time.slice(11, 13)) === timeLocalRounded(9));
+      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(9);
     }),
     afternoon: nextDay.filter((day) => {
-      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(12);
+      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(14);
     }),
     evening: nextDay.filter((day) => {
-      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(19);
+      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(20);
     }),
   };
-  //if (finalResult.lenght()===0){};
+  if (finalResult.lenght === 0) {
+    finalResult = {
+      evening: nextDay.filter((day) => {
+        return parseInt(day.time.slice(11, 13)) === timeLocalRounded(20);
+      }),
+    };
+  }
   //const zip = (a, b) => a.map((k, i) => [k, b[i]]);
   // const finalResult=zip(dayparts,results);
   console.log(finalResult);
