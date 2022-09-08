@@ -68,7 +68,6 @@ export default class CurrentWeather extends React.Component {
     });
 
     let arrayOfTimeshifts = await Promise.all(urls1.map(this.getTimeOffset));
-    console.log(arrayOfTimeshifts);
 
     const resInitial = await axios.get(urls[0]);
 
@@ -121,7 +120,6 @@ export default class CurrentWeather extends React.Component {
   handleSearch = (event) => {
     event.preventDefault();
     this.setState({ city: event.target.value });
-    // let urlCity = `https://nominatim.openstreetmap.org/search?q=${this.state.city}&format=geojson`;
   };
   ///
   handleSubmit = async (event) => {

@@ -2,10 +2,26 @@ table {
   padding: 20px;
   vertical-align: middle;
 }
-td {
+.table td,
+.table th {
   vertical-align: middle;
 }
 .daily-weather-list-item__temperature {
   font-size: 1.4rem;
   line-height: 2.1333333333rem;
+  padding: 20px;
+  color: #c60000;
+  vertical-align: middle;
+}
+.daily-weather-list-item__precipitation {
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+  margin-top: 10px;
+  vertical-align: middle;
+}
+.daily-weather-list-item__wind {
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+  margin-top: 10px;
+  vertical-align: middle;
 }
