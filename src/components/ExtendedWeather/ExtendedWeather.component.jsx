@@ -6,7 +6,7 @@ import "./ExtendedWeather.styles.css";
 
 //import  {PartOfDay} from "../../functions/PartOfDay";
 const ExtendedWeather = ({ days }) => {
-  console.log(days[1].evening !== undefined);
+  console.log(typeof days[1].evening[0]);
   return (
     <div className="ExtendedWeather mt-5 mx-4">
       <table className="table">
@@ -25,7 +25,7 @@ const ExtendedWeather = ({ days }) => {
         </thead>
         <tbody>
           {[...Array(5).keys()].map((i) => {
-            // i += 1;
+            console.log(Object.keys(days[i]));
             const arrDay = Object.entries(days[i]);
 
             let arrDayT = arrDay.map((item) => {
@@ -65,6 +65,14 @@ const ExtendedWeather = ({ days }) => {
             arrDayW = arrDayW.filter((i) => {
               return i !== "none";
             });
+
+            if (Math.round(Math.max(...arrDayT)) === Infinity) {
+              arrDayT = 0;
+              arrDayP = "";
+
+              arrDayW = "";
+            }
+
             return (
               <tr key={i}>
                 {i === 0 ? (
@@ -80,7 +88,7 @@ const ExtendedWeather = ({ days }) => {
                     />
                   </td>
                 ) : (
-                  <td>{""}</td>
+                  <td></td>
                 )}
                 {days[i].morning[0] !== undefined ? (
                   <td>
@@ -90,7 +98,7 @@ const ExtendedWeather = ({ days }) => {
                     />
                   </td>
                 ) : (
-                  <td>{""}</td>
+                  <td></td>
                 )}
                 {days[i].afternoon[0] !== undefined ? (
                   <td>
@@ -100,7 +108,7 @@ const ExtendedWeather = ({ days }) => {
                     />
                   </td>
                 ) : (
-                  <td>{""}</td>
+                  <td></td>
                 )}
                 {days[i].evening[0] !== undefined ? (
                   <td>
@@ -110,21 +118,27 @@ const ExtendedWeather = ({ days }) => {
                     />
                   </td>
                 ) : (
-                  <td>{""}</td>
+                  <td></td>
                 )}
                 <td className="daily-weather-list-item__temperature ">
-                  {Math.round(Math.max(...arrDayT))}°/
-                  {Math.round(Math.min(...arrDayT))}°
+                  {Math.round(Math.max(...arrDayT)) !== Infinity
+                    ? `${Math.round(Math.max(...arrDayT))}°/
+                  ${Math.round(Math.min(...arrDayT))}°`
+                    : ""}
                 </td>
                 <td className="daily-weather-list-item__precipitation ">
-                  {Math.round(Average(arrDayP))} mm
+                  {typeof arrDayP !== "string"
+                    ? `${Math.round(Average(arrDayP))} mm`
+                    : ""}
                 </td>
                 <td className="daily-weather-list-item__wind ">
-                  {Math.round(Average(arrDayW))} m/s
+                  {typeof arrDayW !== "string"
+                    ? `${Math.round(Average(arrDayW))} m/s`
+                    : ""}
                 </td>
               </tr>
             );
-          })}{" "}
+          })}
         </tbody>
       </table>
     </div>

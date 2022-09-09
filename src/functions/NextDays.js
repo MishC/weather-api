@@ -23,6 +23,7 @@ const NextDays = (timeseries, dayX, timeshifts) => {
   //console.log(timeLocal(23));
 
   const timeLocalRounded = (h) => {
+    ///next 6_hour object has image symbol_code from the day 3, therefore +6
     h = h + 6;
     if (timeLocal(h) >= 6 && timeLocal(h) < 11) {
       return 6;
@@ -40,7 +41,6 @@ const NextDays = (timeseries, dayX, timeshifts) => {
   //console.log(timeLocal(hours), timeLocalRounded(14));
   //////////////////////////////////////////////////////////////////////////////////
   const dayPart = (h) => {
-    ///next 6_hour object has image symbol_code from the day 3, therefore +6
     switch (h) {
       case 0:
         return "night";
@@ -68,6 +68,7 @@ const NextDays = (timeseries, dayX, timeshifts) => {
     return dayPart(i);
   });
 */
+  //let finalResult = {};
   let finalResult = {
     [dayPart(timeLocalRounded(1))]: nextDay.filter((day) => {
       // console.log(parseInt(day.time.slice(11, 13)));
@@ -84,10 +85,13 @@ const NextDays = (timeseries, dayX, timeshifts) => {
       return parseInt(day.time.slice(11, 13)) === timeLocalRounded(20);
     }),
   };
-  if (dayX === 0 && finalResult.lenght < 3) {
+  if (finalResult.lenght < 4) {
     finalResult = {
+      night: undefined,
+      morning: undefined,
+
       [dayPart(timeLocalRounded(14))]: nextDay.filter((day) => {
-        timeLocalRounded(timeLocalRounded(14));
+        console.log("hi");
         return parseInt(day.time.slice(11, 13)) === timeLocalRounded(14);
       }),
       [dayPart(timeLocalRounded(18))]: nextDay.filter((day) => {
@@ -95,9 +99,15 @@ const NextDays = (timeseries, dayX, timeshifts) => {
       }),
     };
   }
+  ["night", "morning", "afternoon", "evening"].map((i) => {
+    if (!finalResult.hasOwnProperty(i)) {
+      return (finalResult[i] = []);
+    }
+    return finalResult[i];
+  });
   /*const zip = (a, b) => a.map((k, i) => [k, b[i]]);
   const finalResult = zip(dayparts, results);*/
-  console.log(finalResult);
+  console.log(finalResult, finalResult.lenght);
 
   return finalResult;
 };
