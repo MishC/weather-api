@@ -6,7 +6,6 @@ import "./ExtendedWeather.styles.css";
 
 //import  {PartOfDay} from "../../functions/PartOfDay";
 const ExtendedWeather = ({ days }) => {
-  console.log(typeof days[1].evening[0]);
   return (
     <div className="ExtendedWeather mt-5 mx-4">
       <table className="table">
@@ -25,7 +24,6 @@ const ExtendedWeather = ({ days }) => {
         </thead>
         <tbody>
           {[...Array(5).keys()].map((i) => {
-            console.log(Object.keys(days[i]));
             const arrDay = Object.entries(days[i]);
 
             let arrDayT = arrDay.map((item) => {
@@ -38,7 +36,7 @@ const ExtendedWeather = ({ days }) => {
               return i !== "none";
             });
 
-            let x = i > 1 ? 6 : 1;
+            let x = 6;
             let y = `next_${x}_hours`;
 
             //

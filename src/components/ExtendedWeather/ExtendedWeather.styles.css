@@ -1,10 +1,17 @@
 table {
   padding: 20px;
+  margin-top: 120px;
+
   vertical-align: middle;
+}
+.table thead th {
+  border-bottom: 1px solid #acadad;
 }
 .table td,
 .table th {
   vertical-align: middle;
+  border-top: 1px solid #acadad;
+  border-bottom: 1px solid #acadad;
 }
 .daily-weather-list-item__temperature {
   font-size: 1.4rem;

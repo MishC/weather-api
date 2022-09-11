@@ -13,25 +13,29 @@ const NextDays = (timeseries, dayX, timeshifts) => {
   const dayLocal = timeshifts[dayX] + hours > 24 ? dayMonth + 1 : dayMonth;
   console.log(dayLocal, dayMonth, timeshifts[dayX], hours);
   ////////////////////////////////////////////////////////////////////////////////////
-  const timeLocal = (h) =>
+  const timeLocal = (h) => {
     ///gives local timeshift  and add it to the current UTC time;
+    if (timeshifts[dayX] + h > 24) {
+      return timeshifts[dayX] + h - 24;
+    }
+    if (h + timeshifts[dayX] < 0) {
+      return 24 + timeshifts[dayX];
+    }
 
-    timeshifts[dayX] + h > 24
-      ? timeshifts[dayX] + h - 24
-      : timeshifts[dayX] + h;
-
-  //console.log(timeLocal(23));
+    return timeshifts[dayX] + h;
+  };
+  console.log(timeLocal(hours));
 
   const timeLocalRounded = (h) => {
     ///next 6_hour object has image symbol_code from the day 3, therefore +6
-    h = h + 6;
-    if (timeLocal(h) >= 6 && timeLocal(h) < 11) {
+    let time = h + 6;
+    if (timeLocal(time) >= 5 && timeLocal(time) < 11) {
       return 6;
     } //morning
-    else if (timeLocal(h) >= 11 && timeLocal(h) < 18) {
+    else if (timeLocal(time) >= 11 && timeLocal(time) < 18) {
       return 12;
     } //afternoon
-    else if (timeLocal(h) >= 18 && timeLocal(h) < 24) {
+    else if (timeLocal(time) >= 18 && timeLocal(time) < 24) {
       return 18;
     } //evening
     else {
@@ -71,34 +75,39 @@ const NextDays = (timeseries, dayX, timeshifts) => {
   //let finalResult = {};
   let finalResult = {
     [dayPart(timeLocalRounded(1))]: nextDay.filter((day) => {
-      // console.log(parseInt(day.time.slice(11, 13)));
+      console.log(
+        dayPart(timeLocalRounded(1)),
+        timeLocalRounded(1),
+        timeLocal(1)
+      );
       return parseInt(day.time.slice(11, 13)) === timeLocalRounded(1);
     }),
     [dayPart(timeLocalRounded(8))]: nextDay.filter((day) => {
-      //   console.log(dayPart(timeLocalRounded(7)));
+      console.log(
+        dayPart(timeLocalRounded(8)),
+        timeLocalRounded(8),
+        timeLocal(8)
+      );
       return parseInt(day.time.slice(11, 13)) === timeLocalRounded(8);
     }),
-    [dayPart(timeLocalRounded(15))]: nextDay.filter((day) => {
-      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(15);
+    [dayPart(timeLocalRounded(14))]: nextDay.filter((day) => {
+      console.log(
+        dayPart(timeLocalRounded(14)),
+        timeLocalRounded(14),
+        timeLocal(14)
+      );
+      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(14);
     }),
-    [dayPart(timeLocalRounded(20))]: nextDay.filter((day) => {
-      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(20);
+    [dayPart(timeLocalRounded(19))]: nextDay.filter((day) => {
+      console.log(
+        dayPart(timeLocalRounded(19)),
+        timeLocalRounded(19),
+        timeLocal(19)
+      );
+      return parseInt(day.time.slice(11, 13)) === timeLocalRounded(19);
     }),
   };
-  if (finalResult.lenght < 4) {
-    finalResult = {
-      night: undefined,
-      morning: undefined,
 
-      [dayPart(timeLocalRounded(14))]: nextDay.filter((day) => {
-        console.log("hi");
-        return parseInt(day.time.slice(11, 13)) === timeLocalRounded(14);
-      }),
-      [dayPart(timeLocalRounded(18))]: nextDay.filter((day) => {
-        return parseInt(day.time.slice(11, 13)) === timeLocalRounded(18);
-      }),
-    };
-  }
   ["night", "morning", "afternoon", "evening"].map((i) => {
     if (!finalResult.hasOwnProperty(i)) {
       return (finalResult[i] = []);
