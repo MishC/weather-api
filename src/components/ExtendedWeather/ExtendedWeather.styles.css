@@ -11,7 +11,7 @@ table {
 .table th {
   vertical-align: middle;
   border-top: 1px solid #acadad;
-  border-bottom: 1px solid #acadad;
+  /*  border-bottom: 1px solid #acadad;*/
 }
 .daily-weather-list-item__temperature {
   font-size: 1.4rem;
